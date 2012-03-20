@@ -21,6 +21,7 @@
 #include "ConsoleMessages.h"
 #include "RequestedUrl.h"
 #include "CurrentUrl.h"
+#include "SetAttribute.h"
 
 CommandFactory::CommandFactory(WebPage *page, QObject *parent) : QObject(parent) {
   m_page = page;

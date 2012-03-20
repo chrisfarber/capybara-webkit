@@ -16,6 +16,7 @@ void Reset::start(QStringList &arguments) {
   page()->setUserAgent(NULL);
   page()->resetResponseHeaders();
   page()->resetConsoleMessages();
+  page()->resetSettings();
   resetHistory();
   emit finished(new Response(true));
 }
