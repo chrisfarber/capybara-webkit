@@ -125,6 +125,44 @@ describe Capybara::Session do
       subject.response_headers['X-Capybara'].should == nil
     end
   end
+
+  context "setting attribute for localStorage" do
+    before(:all) do
+      @app = lambda do |env|
+        body <<-HTML
+          <html>
+            <body>
+              <script type="text/javascript">
+                if(!localStorage.count) {
+                  localStorage.count = 0;
+                }
+                if (localStorage.count++) {
+                  document.write("localStorage is enabled");
+                }
+              </script>
+            </body>
+          </html>
+        HTML
+        [200,
+            { 'Content-Type' => 'text/html', 'Content-Length' => body.length.to_s },
+            [body]]
+      end
+    end
+
+    it "should respect LocalStorageEnabled" do
+      $webkit_browser.set_attribute("LocalStorageEnabled", false)
+      subject.visit "/"
+      subject.should_not have_content("localStorage is enabled")
+      subject.visit "/"
+      subject.should_not have_content("localStorage is enabled")
+
+      $webkit_browser.set_attribute("LocalStorageEnabled", "true")
+      subject.visit "/"
+      subject.should_not have_content("localStorage is enabled")
+      subject.visit "/"
+      subject.should have_content("localStorage is enabled")
+    end
+  end
 end
 
 describe Capybara::Session, "with TestApp" do
